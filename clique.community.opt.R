@@ -1,4 +1,4 @@
-clique.community.opt <- function(graph, k){
+clique.community.opt <- function(graph, k, Nodes.Text = FALSE){
 
   ###################################
   ### STEP #1: Clique discovery
@@ -29,7 +29,28 @@ clique.community.opt <- function(graph, k){
   
   comps <- decompose.graph(clq.graph)
   
-  lapply(comps, function(x) {
-    unique(unlist(clq[ V(x)$name ]))
-  })
-}
+  #Create an empty list and then add the different elements that have been created:
+  # "clq" being the clique list; "clq.graph" being the clique graph; "comps" being the 
+  # different components of the clique graph and lastly, the list of communities
+  
+  clq_list <- list()
+  clq_list[[1]] <- clq
+  clq_list[[2]] <- clq.graph
+  clq_list[[3]] <- comps
+  
+if(Nodes.Text) {
+    clq_list[[4]] <-   lapply(comps, function(x) {
+      unique(names(unlist(clq[ V(x)$name ])))
+    })
+  } else {
+    clq_list[[4]] <-   lapply(comps, function(x) {
+      unique(unlist(clq[ V(x)$name ]))
+    })
+  }
+  
+  #Assign names to the four elements created previously, "clq" -> "Cliques"
+  # "clq.graph" -> "Clq_Graph", "comps" -> "Components" and the 4th element -> "Communities"
+  names(clq_list) <- c("Cliques", "Clq_Graph", "Components", "Communities")
+  
+  return(clq_list)
+  }
